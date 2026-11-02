@@ -1,0 +1,8 @@
+.env
+.DS_Store
+__pycache__/
+data/*.csv
+files_manager.py
+kata.py
+oop.py
+training.py
