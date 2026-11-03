@@ -2,11 +2,13 @@
 import os
 import asyncio
 from dotenv import load_dotenv
+from observability import setup_logging, stage, log
 
 from collect import collect
 from enrich import analyse_all, organize_articles
 from digest import write_digest
 
+TEST_LIMIT = 5
 
 load_dotenv(override=True)
 
@@ -19,7 +21,14 @@ else:
  
  
 if __name__ == "__main__":
-    articles = collect()
-    results = asyncio.run(analyse_all(articles[:3]))
-    results_by_cat = organize_articles(results)
-    write_digest(results_by_cat)
+    setup_logging()
+    with stage("collect"):
+        articles = collect()
+    log.info("collected %d articles", len(articles))
+    with stage("analyse"):
+        results = asyncio.run(analyse_all(articles[:TEST_LIMIT]))
+    log.info("analysed %d results", len(results))
+    with stage("organize"):
+        results_by_cat = organize_articles(results)
+    with stage("digest"):
+        write_digest(results_by_cat)

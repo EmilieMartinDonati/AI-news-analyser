@@ -1,6 +1,8 @@
 from datetime import date
 import os
+import logging
 
+log = logging.getLogger("digest")
 
 def write_digest(groups):
     digest = build_digest(groups)
@@ -14,6 +16,7 @@ def build_digest(groups):
     lines = [f"# AI digest – {date.today().isoformat()}", ""]
 
     for category, articles in groups.items():
+        log.info(f"category {category} with length {len(articles)}")
         lines.append(f"## {category.capitalize()}")
         lines.append("")
         for a in articles:
